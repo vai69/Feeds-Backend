@@ -47,8 +47,8 @@ router.get("/current", async (req, res) => {
                 winddirection : result.current_weather.winddirection,
                 weathercode : result.current_weather.weathercode,
                 time: result.current_weather.time,
-                maxtemp : result.daily.apparent_temperature_max[0],
-                mintemp : result.daily.apparent_temperature_min[0],
+                maxtemp : result.daily.apparent_temperature_max,
+                mintemp : result.daily.apparent_temperature_min,
                 sunrise : result.daily.sunrise[0],
                 sunset : result.daily.sunset[0]
             }
