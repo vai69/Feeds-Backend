@@ -9,7 +9,7 @@ router.post('/login', async (req, res) =>{
 
         const pass = data["password"]
         const reqPass = user["password"]
-
+        console.log(data);
         if(pass != reqPass){
             res.send({success,data:"Password doesn't Match!!"})
         }
