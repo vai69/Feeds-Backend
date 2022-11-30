@@ -71,14 +71,19 @@ router.get("/hourly-forecast", async (req, res) => {
         resp.on('end', () => {
             console.log(JSON.parse(data))
             const result = JSON.parse(data);
-
+            let weathercodeFor4 = [];
+            weathercodeFor4.push(result.hourly.weathercode[0]);
+            weathercodeFor4.push(result.hourly.weathercode[24]);
+            weathercodeFor4.push(result.hourly.weathercode[48]);
+            weathercodeFor4.push(result.hourly.weathercode[72]);
             const relt = {
 
                 temperature_2m: result.hourly.temperature_2m,
                 relativehumidity: result.hourly.relativehumidity_2m,
                 dewpoint: result.hourly.dewpoint_2m,
                 cloudcover: result.hourly.cloudcover,
-                weathercode: result.hourly.weathercode
+                weathercode: result.hourly.weathercode,
+                weathercodeFor4 : weathercodeFor4
             }
             res.send(relt);
         });
