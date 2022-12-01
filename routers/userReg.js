@@ -2,42 +2,65 @@ var express = require('express');
 var router = express.Router();
 const User = require("../db/User")
 
-router.post('/login', async (req, res) =>{
-    try{
-        const data = await req.body;
-        const user = await User.findOne({ username: data["username"] });
 
-        const pass = data["password"]
-        const reqPass = user["password"]
-        console.log(data);
-        if(pass != reqPass){
-            res.send({success,data:"Password doesn't Match!!"})
+router.route("/login").post(async (req, res) =>{
+    try{
+        const{username,password} = req.body;
+        if(!username){
+          return res.status(400).json({error : "Plz fill the field properly"});
         }
-        success = true
-        res.send({success,data:user})
-    }
-    catch(e){
-        console.log(e)
-        res.send({success,data:e})
-    }
+    
+        const userLogin= await User.findOne({username : username});
+        
+    
+        if(userLogin){
+          if(password != userLogin.password){
+            return res.status(400).json({error : "invalid pass or email"});
+          }
+          else{
+            return res.status(200).json({message : "Login Success", user: username});
+          }    
+        }else{
+          return res.status(400).json({error : "Invalid credentials"});
+        }
+      
+      }catch(err){
+        console.log(err);
+      }
     
 
 })
 
-router.post('/signup', async (req, res)=> {
-    let success = false
+
+
+router.route("/signup").post(async(req,res)=>{
+    const{name, username, password}= req.body; 
+    console.log(req.body.name);
+    console.log(req.body.username);
+    console.log(req.body.password);
+    if(!name|| !username || !password){
+      return res.status(422).json({error : "Plz fill the field properly"});
+    }
+    else{
     try{
-        const data = await req.body;
-        const savedData = await User.create(data)
-        await savedData.save()
-        success = true
-        res.send({success,data:data});
-    }
-    catch(e){
-        console.log(e)
-        res.send({success,data:e})
-    }
+      const userExits = await User.findOne({username: username});
+      if(userExits){
+        console.log("User Exits");
+        return res.status(422).json({err:" User Exists"});
+      }else{
+        const user = new User({name,username,password});
+        const userRegister =  await user.save();
+        console.log('${user} user Register success');
+        console.log(userRegister);
+        res.status(201).json({ message:"user registerd successfully" });
     
-})
+      }
+  
+    }catch(err){
+      console.log(err);
+    }
+    }
+    res.status(201).json({ message:"user registerd successfully", username});
+});
 
 module.exports = router
