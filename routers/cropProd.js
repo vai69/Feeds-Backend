@@ -27,4 +27,4 @@ router.get("/:crop_year/:season/:crop",async (req,res)=>{
  
 })
 
-module.exports = routers
+module.exports = router
