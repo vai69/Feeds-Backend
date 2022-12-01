@@ -5,7 +5,7 @@ const User = require("../db/User")
 
 router.route("/login").post(async (req, res) =>{
     try{
-        const{username,password} = req.body;
+        const{name,username,password} = req.body;
         if(!username){
           return res.status(400).json({error : "Plz fill the field properly"});
         }
