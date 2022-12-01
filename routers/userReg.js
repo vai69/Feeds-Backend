@@ -5,7 +5,7 @@ const User = require("../db/User")
 
 router.route("/login").post(async (req, res) =>{
     try{
-        const{name,username,password} = req.body;
+        const{username,password} = req.body;
         if(!username){
           return res.status(400).json({error : "Plz fill the field properly"});
         }
@@ -35,7 +35,6 @@ router.route("/login").post(async (req, res) =>{
 
 router.route("/signup").post(async(req,res)=>{
     const{name, username, password}= req.body; 
-    console.log(req.body.name);
     console.log(req.body.username);
     console.log(req.body.password);
     if(!name|| !username || !password){
@@ -60,7 +59,6 @@ router.route("/signup").post(async(req,res)=>{
       console.log(err);
     }
     }
-    res.status(201).json({ message:"user registerd successfully", username});
 });
 
 module.exports = router
