@@ -223,7 +223,7 @@ router.post("/airqality_pm", async (req, res) => {
 
     let lon = req.body.lon;
 
-    const url = "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=" + lat + "&longitude=" + lon + "&hourly=pm10,pm2_5";
+    const url = "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=" + lat + "&longitude=" + lon + "&hourly=pm10,pm2_5&timezone=IST";
 
     https.get(url, (resp) => {
         let data = '';
@@ -247,7 +247,7 @@ router.post("/airqality_pm", async (req, res) => {
 router.post("/airqality_gas", async (req, res) => {
     let lat = req.body.lat;
     let lon = req.body.lon;
-    const url = "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=" + lat + "&longitude=" + lon + "&hourly=carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone";
+    const url = "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=" + lat + "&longitude=" + lon + "&hourly=carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone&timezone=IST";
     https.get(url, (resp) => {
         let data = '';
         resp.on('data', (chunk) => {
