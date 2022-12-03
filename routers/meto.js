@@ -6,18 +6,18 @@ const https = require("https");
 const axios = require('axios');
 
 var today = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); 
-        var yyyy = today.getFullYear();
-        let hour = today.getHours();
-        var hours = ""
-        console.log(hour)
-        if(hour>9)
-            hours = String(hour)
-        else{
-            hours = '0'+String(hour)
-        }     
-        today = yyyy+'-'+mm+'-'+dd+'T'+hours+':00';
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0');
+var yyyy = today.getFullYear();
+let hour = today.getHours();
+var hours = ""
+console.log(hour)
+if (hour > 9)
+    hours = String(hour)
+else {
+    hours = '0' + String(hour)
+}
+today = yyyy + '-' + mm + '-' + dd + 'T' + hours + ':00';
 
 router.get("/soil", async (req, res) => {
 
@@ -30,7 +30,7 @@ router.get("/soil", async (req, res) => {
         resp.on('end', () => {
             const result = JSON.parse(data);
             var index = result.hourly.time.indexOf(today)
-    
+
             const rslt = {
                 soil_temperature_0cm: result.hourly.soil_temperature_0cm[index],
                 soil_temperature_6cm: result.hourly.soil_temperature_6cm[index],
@@ -77,9 +77,15 @@ router.get("/soil/moist", async (req, res) => {
 
 
 
-router.get("/current", async (req, res) => {
+router.post("/current", async (req, res) => {
 
-    https.get('https://api.open-meteo.com/v1/forecast?latitude=16.85438&longitude=74.56417&current_weather=true&daily=apparent_temperature_max,apparent_temperature_min,sunrise,sunset&timezone=IST', (resp) => {
+    let lat = req.body.lat;
+
+    let lon = req.body.lon;
+
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current_weather=true&daily=apparent_temperature_max,apparent_temperature_min,sunrise,sunset&timezone=IST'
+
+    https.get(url, (resp) => {
         let data = '';
         resp.on('data', (chunk) => {
             data += chunk;
@@ -89,15 +95,15 @@ router.get("/current", async (req, res) => {
             const result = JSON.parse(data);
 
             const rslt = {
-                temperature : result.current_weather.temperature,
+                temperature: result.current_weather.temperature,
                 windspeed: result.current_weather.windspeed,
-                winddirection : result.current_weather.winddirection,
-                weathercode : result.current_weather.weathercode,
+                winddirection: result.current_weather.winddirection,
+                weathercode: result.current_weather.weathercode,
                 time: result.current_weather.time,
-                maxtemp : result.daily.apparent_temperature_max,
-                mintemp : result.daily.apparent_temperature_min,
-                sunrise : result.daily.sunrise[0],
-                sunset : result.daily.sunset[0]
+                maxtemp: result.daily.apparent_temperature_max,
+                mintemp: result.daily.apparent_temperature_min,
+                sunrise: result.daily.sunrise[0],
+                sunset: result.daily.sunset[0]
             }
 
             res.send(rslt);
@@ -108,9 +114,12 @@ router.get("/current", async (req, res) => {
 })
 
 
-router.get("/hourly-forecast", async (req, res) => {
+router.post("/hourly-forecast", async (req, res) => {
+    let lat = req.body.lat;
 
-    https.get('https://api.open-meteo.com/v1/forecast?latitude=16.85438&longitude=74.56417&hourly=temperature_2m,relativehumidity_2m,dewpoint_2m,cloudcover,weathercode&timezone=IST', (resp) => {
+    let lon = req.body.lon;
+
+    https.get('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&hourly=temperature_2m,relativehumidity_2m,dewpoint_2m,cloudcover,weathercode&timezone=IST', (resp) => {
         let data = '';
         resp.on('data', (chunk) => {
             data += chunk;
@@ -130,7 +139,7 @@ router.get("/hourly-forecast", async (req, res) => {
                 dewpoint: result.hourly.dewpoint_2m,
                 cloudcover: result.hourly.cloudcover,
                 weathercode: result.hourly.weathercode,
-                weathercodeFor4 : weathercodeFor4
+                weathercodeFor4: weathercodeFor4
             }
             res.send(relt);
         });
@@ -206,6 +215,68 @@ router.get("/rain", async (req, res) => {
         console.log("Error: " + err.message);
     })
 })
+
+
+router.post("/airqality_pm", async (req, res) => {
+
+    let lat = req.body.lat;
+
+    let lon = req.body.lon;
+
+    const url = "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=" + lat + "longitude=" + lon + "&hourly=pm10,pm2_5";
+
+    https.get(url, (resp) => {
+        let data = '';
+        resp.on('data', (chunk) => {
+            data += chunk;
+        });
+        resp.on('end', () => {
+            console.log(JSON.parse(data));
+            const result = JSON.parse(data);
+            res.send({
+                
+                pm10 : result.hourly.pm10,
+            
+                pm2_5 :  result.hourly.pm10
+            });
+        });
+    })
+
+})
+
+router.post("/airqality_gas", async (req, res) => {
+    let lat = req.body.lat;
+    let lon = req.body.lon;
+    const url = "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=" + lat + "longitude=" + lon + "&hourly="+gas;
+    https.get(url, (resp) => {
+        let data = '';
+        resp.on('data', (chunk) => {
+            data += chunk;
+        });
+        resp.on('end', () => {
+            console.log(JSON.parse(data));
+            const result = JSON.parse(data);
+
+            const fr = {
+
+                nitrogen_dioxide :result.hourly.carbon_monoxide[hour],
+
+                carbon_monoxide: result.hourly.carbon_monoxide[hour],
+
+                sulphur_dioxide: result.hourly.carbon_monoxide[hour],
+
+                ozon : result.hourly.carbon_monoxide[hour],
+
+            }
+            res.send(fr);
+        });
+    })
+
+})
+
+
+
+
 
 
 router.post(`/history/:start/:end`, async (req, res) => {
