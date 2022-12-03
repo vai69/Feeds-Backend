@@ -259,13 +259,13 @@ router.post("/airqality_gas", async (req, res) => {
 
             const fr = {
 
-                nitrogen_dioxide :result.hourly.carbon_monoxide[hour],
+                nitrogen_dioxide :result.hourly.nitrogen_dioxide[hour],
 
                 carbon_monoxide: result.hourly.carbon_monoxide[hour],
 
-                sulphur_dioxide: result.hourly.carbon_monoxide[hour],
+                sulphur_dioxide: result.hourly.sulphur_dioxide[hour],
 
-                ozon : result.hourly.carbon_monoxide[hour],
+                ozone : result.hourly.ozone[hour],
 
             }
             res.send(fr);
