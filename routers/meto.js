@@ -40,7 +40,7 @@ router.get("/soil", async (req, res) => {
             res.send(rslt);
         });
     }).on("error", (err) => {
-        // console.log("Error: " + err.message);
+        res.status(400).send("Error")
     })
 })
 
@@ -69,7 +69,7 @@ router.get("/soil/moist", async (req, res) => {
             res.send(rslt);
         });
     }).on("error", (err) => {
-        // console.log("Error: " + err.message);
+        res.status(400).send("Error")
     })
 })
 
@@ -91,7 +91,6 @@ router.post("/current", async (req, res) => {
             data += chunk;
         });
         resp.on('end', () => {
-            // console.log(JSON.parse(data))
             const result = JSON.parse(data);
 
             const rslt = {
@@ -109,7 +108,7 @@ router.post("/current", async (req, res) => {
             res.send(rslt);
         });
     }).on("error", (err) => {
-        // console.log("Error: " + err.message);
+        res.status(400).send("Error")
     })
 })
 
@@ -125,7 +124,6 @@ router.post("/hourly-forecast", async (req, res) => {
             data += chunk;
         });
         resp.on('end', () => {
-            // console.log(JSON.parse(data))
             const result = JSON.parse(data);
             let weathercodeFor4 = [];
             weathercodeFor4.push(result.hourly.weathercode[0]);
@@ -144,7 +142,7 @@ router.post("/hourly-forecast", async (req, res) => {
             res.send(relt);
         });
     }).on("error", (err) => {
-        // console.log("Error: " + err.message);
+        res.status(400).send("Error")
     })
 })
 
@@ -157,11 +155,10 @@ router.get("/relativehumidity_2m", async (req, res) => {
             data += chunk;
         });
         resp.on('end', () => {
-            // console.log(JSON.parse(data));
             res.send(data);
         });
     }).on("error", (err) => {
-        // console.log("Error: " + err.message);
+        res.status(400).send("Error")
     })
 })
 
@@ -172,11 +169,10 @@ router.get("/dewpoint_2m", async (req, res) => {
             data += chunk;
         });
         resp.on('end', () => {
-            // console.log(JSON.parse(data));
             res.send(data);
         });
     }).on("error", (err) => {
-        // console.log("Error: " + err.message);
+        res.status(400).send("Error")
     })
 })
 
@@ -187,17 +183,15 @@ router.get("/apparent_temperature", async (req, res) => {
             data += chunk;
         });
         resp.on('end', () => {
-            // console.log(JSON.parse(data));
             let result = JSON.parse(data)
             let r = 0;
             for (var i = 0; i < 24; i++) {
                 r += result.hourly.apparent_temperature[i];
             }
-            // console.log(r / 24)
             res.send(result.hourly.apparent_temperature);
         });
     }).on("error", (err) => {
-        // console.log("Error: " + err.message);
+        res.status(400).send("Error")
     })
 })
 
@@ -208,11 +202,10 @@ router.get("/rain", async (req, res) => {
             data += chunk;
         });
         resp.on('end', () => {
-            // console.log(JSON.parse(data));
             res.send(data);
         });
     }).on("error", (err) => {
-        // console.log("Error: " + err.message);
+        res.status(400).send("Error")
     })
 })
 
@@ -231,7 +224,6 @@ router.post("/airqality_pm", async (req, res) => {
             data += chunk;
         });
         resp.on('end', () => {
-            // console.log(JSON.parse(data));
             const result = JSON.parse(data);
             res.send({
                 
@@ -283,19 +275,18 @@ router.post(`/history/:start/:end`, async (req, res) => {
     let st = req.params.start;
     let en = req.params.end;
     const url = 'https://archive-api.open-meteo.com/v1/era5?latitude=16.85438&longitude=74.56417&start_date=' + st + '&end_date=' + en + '&hourly=temperature_2m&timezone=IST';
-    // console.log(url)
     https.get(url, (resp) => {
         let data = '';
         resp.on('data', (chunk) => {
             data += chunk;
         });
         resp.on('end', () => {
-            // console.log(JSON.parse(data));
+
             const result = JSON.parse(data);
             res.send(result.hourly.temperature_2m);
         });
     }).on("error", (err) => {
-        // console.log("Error: " + err.message);
+        res.status(400).send("Error")
     })
 })
 
